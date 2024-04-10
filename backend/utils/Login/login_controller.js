@@ -2,7 +2,7 @@ const User = require('../../models/usermodel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
-const mongoose = require('mongoose'); // Make sure to require mongoose
+const mongoose = require('mongoose');
 
 exports.registerUser = async (req, res) => {
   const errors = validationResult(req);
