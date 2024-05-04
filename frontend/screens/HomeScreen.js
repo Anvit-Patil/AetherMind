@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Button, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -10,24 +10,42 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: '60%',
     margin: 10,
+    backgroundColor: '#FF6F61', //coral
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  backgroundImage: {
+    flex: 1,
+    opacity: 0.85, 
   },
 });
 
 export default function HomeScreen({ navigation }) {
   return (
-    <View style={styles.container}>
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Chat"
-          onPress={() => navigation.navigate('Chat')} // Make sure 'Chat' is the name of your chat screen route
-        />
+    <ImageBackground
+      source={require('../assets/image/back 4.png')}
+      style={styles.backgroundImage}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Chat')}>
+          <Text style={styles.buttonText}>Chat</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Journal')}>
+          <Text style={styles.buttonText}>Journals</Text>
+        </TouchableOpacity>
       </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Journals"
-          onPress={() => navigation.navigate('Journal')} // Make sure 'Journal' is the name of your journal screen route
-        />
-      </View>
-    </View>
+    </ImageBackground>
   );
 }

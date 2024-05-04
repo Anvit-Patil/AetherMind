@@ -1,17 +1,25 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ImageBackground } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const styles = StyleSheet.create({
-  // Your style definitions remain unchanged
   container: {
     flex: 1,    
     alignItems: 'center',
     justifyContent: 'center',
   },
+  titleText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10
+  },
   inputContainer: {
-    width: '80%', 
-    marginBottom: 15, 
+    width: '80%',
+    marginBottom: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)', 
+    borderRadius: 5,
   },
   input: {
     borderWidth: 1, 
@@ -20,6 +28,25 @@ const styles = StyleSheet.create({
     borderRadius: 5, 
     fontSize: 16, 
   },
+  button: {
+    backgroundColor: '#FF6F61', 
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  backgroundImage: {
+    flex: 1,
+    opacity: 0.85, 
+  }, 
 });
 
 export default function RegisterScreen({ navigation }) {
@@ -32,8 +59,7 @@ export default function RegisterScreen({ navigation }) {
       return;
     }
 
-    try {
-      // Replace 'http://localhost:3000/user/register' with your actual endpoint
+    try {      
       const response = await fetch('http://10.0.2.2:3000/user/register', {
         method: 'POST',
         headers: {
@@ -44,16 +70,14 @@ export default function RegisterScreen({ navigation }) {
 
       const data = await response.json();
 
-      if (!response.ok) {
+      if (response.ok) {
+        // Only navigate and save the token if the registration is successful
+        await AsyncStorage.setItem('userToken', data.token);
+        navigation.replace('Home'); // Ensure user does not navigate back to registration
+      } else {
         // Handle errors returned from the server
         Alert.alert('Registration Error', data.msg || 'An error occurred during registration.');
-        return;
-      }
-
-      // On successful registration, save the token and navigate to the chat screen
-      await AsyncStorage.setItem('userToken', data.token);
-      navigation.replace('Home');
-      navigation.navigate('Home'); // Make sure 'Chat' is the name of your chat screen route
+      } 
 
     } catch (error) {
       console.error('Registration failed:', error);
@@ -62,30 +86,35 @@ export default function RegisterScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text>Register</Text>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail} // Update the email state
-          autoCapitalize="none"
-        />
+    <ImageBackground
+      source={require('../assets/image/back 4.png')}
+      style={styles.backgroundImage}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <Text style={styles.titleText}>Register</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+        </View>
+        <TouchableOpacity style={styles.button} onPress={handleRegistration}>
+          <Text style={styles.buttonText}>Register</Text>
+        </TouchableOpacity>
       </View>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword} // Update the password state
-        />
-      </View>
-
-      <Button title="Register" onPress={handleRegistration} />
-    </View>
+    </ImageBackground>
   );
 }

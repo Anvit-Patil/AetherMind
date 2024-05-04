@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, TextInput, Button, FlatList, Text, StyleSheet, Alert, BackHandler } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, FlatList, StyleSheet, Alert, BackHandler, ImageBackground } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const styles = StyleSheet.create({
@@ -10,6 +10,9 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 1)', 
+    borderRadius: 5,
+    marginBottom: 10,
   },
   input: {
     borderWidth: 1,
@@ -17,18 +20,39 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 10,
     padding: 10,
+    borderRadius: 5,
+  },
+  button: {
+    backgroundColor: '#FF6F61', // coral
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
   },
   message: {
     marginVertical: 5,
     padding: 10,
-    backgroundColor: 'lightgrey',
+    backgroundColor: 'rgba(144, 238, 144, 0.85)', // Semi-transparent message background
     alignSelf: 'flex-start',
+    borderRadius: 10,
   },
   reply: {
     marginVertical: 5,
     padding: 10,
-    backgroundColor: 'lightblue',
+    backgroundColor: 'rgba(64, 224, 208, 0.85)', // Semi-transparent reply background
     alignSelf: 'flex-end',
+    borderRadius: 10,
+  },
+  backgroundImage: {
+    flex: 1,
+    opacity: 0.85, 
   },
 });
 
@@ -122,23 +146,31 @@ export default function ChatScreen({ navigation }) {
   }, [handleBackPress]);
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={chat}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <Text style={item.role === 'user' ? styles.message : styles.reply}>{item.content}</Text>
-        )}
-      />
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          value={message}
-          onChangeText={setMessage}
-          placeholder="Type a message"
+    <ImageBackground
+      source={require('../assets/image/back 4.png')}
+      style={styles.backgroundImage}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <FlatList
+          data={chat}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <Text style={item.role === 'user' ? styles.message : styles.reply}>{item.content}</Text>
+          )}
         />
-        <Button title="Send" onPress={sendMessage} />
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={message}
+            onChangeText={setMessage}
+            placeholder="Type a message"
+          />
+          <TouchableOpacity style={styles.button} onPress={sendMessage}>
+            <Text style={styles.buttonText}>Send</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
